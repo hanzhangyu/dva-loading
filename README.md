@@ -1,52 +1,41 @@
-# dva-loading
+# dva-loading (plus)
 
-[![NPM version](https://img.shields.io/npm/v/dva-loading.svg?style=flat)](https://npmjs.org/package/dva-loading)
-[![Build Status](https://img.shields.io/travis/dvajs/dva-loading.svg?style=flat)](https://travis-ci.org/dvajs/dva-loading)
-[![Coverage Status](https://img.shields.io/coveralls/dvajs/dva-loading.svg?style=flat)](https://coveralls.io/r/dvajs/dva-loading)
-[![NPM downloads](http://img.shields.io/npm/dm/dva-loading.svg?style=flat)](https://npmjs.org/package/dva-loading)
+This profile is forked from [dvajs/dva-loading](https://github.com/dvajs/dva-loading)
 
-Auto loading plugin for dva. :clap: You don't need to write `showLoading` and `hideLoading` any more.
 
----
+### Why
 
-## Install
+There has some [problems](https://github.com/dvajs/dva-loading/issues/20) when I use `dva-loading `.So I modified the creatLoading function.
 
-```bash
-$ npm install dva-loading --save
-```
-
-## Usage
+### Usage
 
 ```javascript
 import createLoading from 'dva-loading';
 
 const app = dva();
-app.use(createLoading(opts));
+app.use(createLoading(opts,ignore));
 ```
+The `ignore` is a array which control the `loading` is listening to some effect or not ( Maybe some effect is sustained ) .
 
-Then we can access loading state from store.
-
-### opts
-
-- `opts.namespace`: property key on global state, type String, Default `loading`
-
-[See real project usage on dva-hackernews](https://github.com/dvajs/dva-hackernews/blob/2c3330b1c8ae728c94ebe1399b72486ad5a1a7a0/src/index.js#L4-L7).
-
-- `opts.effects`: enable effects level loading state
-
-## State Structure
-
-```
-loading: {
-  global: false,
-  models: {
-    users: false,
-    todos: false,
-    ...
-  },
+For example:
+```javascript
+// modal>effects
+*someEffect ({payload, onBack}, {call, select, put}) {
+   const delay=(timeout=30000)=> {
+      return new Promise(resolve => {
+        let taskID = setTimeout(resolve, timeout);
+        config.taskID = taskID;
+      });
+    }
+    while (true) {
+      yield call(delay, config.taskTime);
+    }
 }
+// index
+import createLoading from 'dva-loading';
+
+const app = dva();
+app.use(createLoading({},['namespace/someEffect']));
 ```
 
-## License
-
-[MIT](https://tldrlegal.com/license/mit-license)
+In the containers we have `loading.models.namasace` and  `loading.models.namasaceAll`, the `loading.models.namasaceAll` will listen to nested effects.
