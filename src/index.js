@@ -5,7 +5,7 @@ const NAMESPACE = 'loading';
 /**
  * 插件初始化
  * @param opts
- * @param ignore 在使用中发现用些effect永远停止，因为要不断对服务器做轮询
+ * @param ignore 在使用中发现有些effect永远不会停止，因为要不断对服务器做轮询
  * @returns {*}
  */
 function createLoading(opts = {},ignore=[]) {
